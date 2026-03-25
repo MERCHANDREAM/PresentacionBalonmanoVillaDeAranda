@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Merchandream × Balonmano Villa de Aranda</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/x-icon" href="./assets/favicon.ico">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+:root {
+  --gold: #FFD700;
+  --gold-dark: #c9a900;
+  --blue: #0055A4;
+  --blue-dark: #003d7a;
+  --blue-light: #1a6cc4;
+  --ink: #04111f;
+  --white: #F5F0E8;
+  --grey: #0d1f33;
+  --grey-mid: #132840;
+  --text-muted: #6a8aaa;
+}
+
+html { scroll-behavior:smooth; }
+body { background:var(--ink); color:var(--white); font-family:'Barlow',sans-serif; cursor:none; overflow-x:hidden; line-height:1.6; }
+
+body::after {
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:0.03; pointer-events:none; z-index:9999; animation:grain 0.5s steps(2) infinite;
+}
+@keyframes grain {
+  0%,100%{transform:translate(0,0)} 10%{transform:translate(-2%,-3%)} 20%{transform:translate(3%,1%)}
+  30%{transform:translate(-1%,4%)} 40%{transform:translate(2%,-2%)} 50%{transform:translate(-3%,2%)}
+  60%{transform:translate(1%,-1%)} 70%{transform:translate(-2%,3%)} 80%{transform:translate(3%,-3%)} 90%{transform:translate(-1%,2%)}
+}
+
+#cursor { position:fixed; top:0; left:0; width:34px; height:34px; pointer-events:none; z-index:10000; transform:translate(-50%,-50%); }
+#cursor svg { width:100%; height:100%; transition:transform 0.15s ease; }
+#cursor.hovering svg { transform:scale(1.5); }
+#cursor-trail { position:fixed; top:0; left:0; width:9px; height:9px; background:var(--gold); border-radius:50%; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); opacity:0.5; }
+
+.bg-balls { position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.bg-ball { position:absolute; border-radius:50%; animation:floatBall linear infinite; }
+@keyframes floatBall {
+  0%   { transform:translateY(110vh) rotate(0deg); }
+  100% { transform:translateY(-20vh) rotate(720deg); }
+}
+
+nav { position:fixed; top:0; left:0; right:0; z-index:1000; padding:18px 52px; display:flex; align-items:center; justify-content:space-between; background:linear-gradient(to bottom,rgba(4,17,31,0.98) 0%,transparent 100%); transition:background 0.3s, backdrop-filter 0.3s; }
+.nav-collab { display:flex; align-items:center; gap:10px; }
+.nav-badge { font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.12em; padding:6px 14px; border:2px solid var(--gold); color:var(--gold); text-transform:uppercase; white-space:nowrap; }
+.nav-x { color:var(--text-muted); font-family:'Anton',sans-serif; font-size:16px; }
+.nav-badge-blue { font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.12em; padding:6px 14px; border:2px solid var(--blue-light); color:var(--blue-light); text-transform:uppercase; white-space:nowrap; }
+.nav-links { display:flex; align-items:center; gap:36px; list-style:none; }
+.nav-links a { color:var(--white); text-decoration:none; font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:13px; letter-spacing:0.12em; text-transform:uppercase; opacity:0.7; transition:opacity 0.2s,color 0.2s; }
+.nav-links a:hover { opacity:1; color:var(--gold); }
+.nav-cta { background:var(--gold)!important; color:var(--ink)!important; padding:9px 22px; font-weight:700!important; opacity:1!important; }
+.nav-cta:hover { background:var(--gold-dark)!important; }
+.nav-hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:none; padding:4px; z-index:1002; }
+.nav-hamburger span { display:block; width:26px; height:2px; background:var(--white); transition:all 0.3s; }
+.nav-hamburger.open span:nth-child(1) { transform:rotate(45deg) translate(5px,5px); }
+.nav-hamburger.open span:nth-child(2) { opacity:0; }
+.nav-hamburger.open span:nth-child(3) { transform:rotate(-45deg) translate(5px,-5px); }
+
+.mobile-menu { position:fixed; inset:0; background:var(--ink); z-index:1001; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px; transform:translateX(100%); transition:transform 0.4s cubic-bezier(0.76,0,0.24,1); }
+.mobile-menu.open { transform:translateX(0); }
+.mobile-menu a { font-family:'Anton',sans-serif; font-size:44px; text-transform:uppercase; color:var(--white); text-decoration:none; transition:color 0.2s; letter-spacing:0.04em; }
+.mobile-menu a:hover { color:var(--gold); }
+.mobile-menu-cta { background:var(--gold); color:var(--ink)!important; padding:16px 48px; font-size:28px!important; margin-top:16px; }
+
+.marquee-wrap { background:var(--gold); overflow:hidden; white-space:nowrap; border-top:2px solid var(--gold-dark); border-bottom:2px solid var(--gold-dark); position:relative; z-index:100; }
+.marquee-track { display:inline-flex; animation:marquee 20s linear infinite; }
+.marquee-item { font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.18em; text-transform:uppercase; color:var(--ink); padding:10px 28px; display:flex; align-items:center; gap:18px; }
+.marquee-dot { width:6px; height:6px; background:var(--blue); border-radius:50%; flex-shrink:0; }
+@keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+.hero { min-height:100vh; display:grid; grid-template-columns:1.1fr 0.9fr; position:relative; overflow:hidden; }
+.hero-bg { position:absolute; inset:0; z-index:0; background:radial-gradient(ellipse at 70% 50%, rgba(0,85,164,0.18) 0%, transparent 65%), radial-gradient(ellipse at 20% 80%, rgba(255,215,0,0.06) 0%, transparent 50%); }
+.hero-left { display:flex; flex-direction:column; justify-content:center; padding:140px 60px 80px; position:relative; z-index:2; }
+.hero-collab-tag { display:inline-flex; align-items:center; gap:10px; margin-bottom:28px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); }
+.hero-collab-tag::before { content:''; display:block; width:32px; height:2px; background:var(--gold); }
+.hero-title { font-family:'Anton',sans-serif; font-size:clamp(56px,7.5vw,110px); line-height:0.9; text-transform:uppercase; margin-bottom:28px; }
+.hero-title .line-outline { -webkit-text-stroke:2px #0055A4; color:transparent; display:block; letter-spacing:0.08em; }
+.hero-title .line-gold { color:var(--gold); display:block; }
+.hero-title .line-white { color:var(--white); display:block; }
+.hero-desc { font-size:16px; line-height:1.75; color:rgba(245,240,232,0.7); max-width:460px; margin-bottom:44px; }
+.hero-cta-group { display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.pill-cta { display:inline-flex; align-items:center; gap:10px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:14px; letter-spacing:0.1em; text-transform:uppercase; text-decoration:none; padding:15px 34px; border:2px solid transparent; transition:all 0.25s ease; }
+.pill-cta-primary { background:var(--gold); color:var(--ink); border-color:var(--gold); }
+.pill-cta-primary:hover { background:transparent; color:var(--gold); border-color:var(--gold); }
+.pill-cta-secondary { background:transparent; color:var(--blue-light); border-color:var(--blue-light); }
+.pill-cta-secondary:hover { background:var(--blue); color:var(--white); border-color:var(--blue); }
+.pill-cta-arrow { font-size:18px; transition:transform 0.2s; }
+.pill-cta:hover .pill-cta-arrow { transform:translateX(5px); }
+.hero-stats { display:flex; gap:36px; margin-top:56px; padding-top:36px; border-top:1px solid rgba(255,255,255,0.08); flex-wrap:wrap; }
+.hero-stat-num { font-family:'Anton',sans-serif; font-size:38px; color:var(--gold); line-height:1; }
+.hero-stat-label { font-family:'Barlow Condensed',sans-serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-top:3px; }
+
+.hero-right { position:relative; display:flex; align-items:center; justify-content:center; overflow:hidden; }
+.hero-ball-wrap { position:relative; z-index:2; animation:heroBounce 3s ease-in-out infinite; }
+@keyframes heroBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-24px)} }
+.hero-ball-wrap svg { width:clamp(220px,28vw,380px); height:auto; filter:drop-shadow(0 24px 48px rgba(0,85,164,0.5)); }
+.hero-glow { position:absolute; width:400px; height:400px; border-radius:50%; background:radial-gradient(circle,rgba(0,85,164,0.25) 0%,transparent 70%); pointer-events:none; }
+.hero-right-label { position:absolute; bottom:40px; right:36px; font-family:'Anton',sans-serif; font-size:10px; letter-spacing:0.22em; text-transform:uppercase; color:rgba(245,240,232,0.25); writing-mode:vertical-rl; transform:rotate(180deg); }
+
+.section { padding:110px 60px; position:relative; z-index:1; }
+.section-inner { max-width:1200px; margin:0 auto; }
+.section-tag { display:inline-flex; align-items:center; gap:12px; font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold); margin-bottom:20px; }
+.section-tag::before { content:''; display:block; width:24px; height:2px; background:var(--gold); }
+.section-title { font-family:'Anton',sans-serif; font-size:clamp(36px,4.5vw,72px); line-height:0.95; text-transform:uppercase; margin-bottom:16px; }
+.accent-gold { color:var(--gold); }
+.accent-blue { color:var(--blue-light); }
+
+.stats-band { background:var(--blue); padding:56px 60px; position:relative; overflow:hidden; z-index:1; }
+.stats-band::before { content:''; position:absolute; top:-60px; right:-60px; width:320px; height:320px; background:rgba(255,215,0,0.07); border-radius:50%; }
+.stats-band::after { content:''; position:absolute; bottom:-40px; left:-40px; width:200px; height:200px; background:rgba(255,255,255,0.04); border-radius:50%; }
+.stats-band-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:32px; text-align:center; position:relative; z-index:1; }
+.stat-block { border-left:1px solid rgba(255,255,255,0.15); padding-left:32px; }
+.stat-block:first-child { border-left:none; padding-left:0; }
+.stat-num { font-family:'Anton',sans-serif; font-size:56px; line-height:1; color:var(--gold); display:block; }
+.stat-label { font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:12px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.65); margin-top:6px; display:block; }
+
+.club-section { background:var(--grey); }
+.club-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; margin-top:56px; }
+.social-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:28px; }
+.social-card { background:var(--grey-mid); padding:18px 20px; border-left:3px solid var(--gold); display:flex; justify-content:space-between; align-items:center; }
+.social-name { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); }
+.social-num { font-family:'Anton',sans-serif; font-size:26px; color:var(--gold); }
+.club-img-wrap { position:relative; aspect-ratio:4/3; background:var(--grey-mid); overflow:hidden; }
+.club-img-wrap img { width:100%; height:100%; object-fit:cover; display:block; opacity:0.55; }
+.club-img-wrap::before { content:''; position:absolute; inset:0; border:2px solid var(--blue); z-index:1; pointer-events:none; }
+.club-img-wrap::after { content:'PABELLÓN SANTIAGO MANGUÁN'; position:absolute; bottom:14px; left:14px; font-family:'Barlow Condensed',sans-serif; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); z-index:2; }
+
+.pabellon-section { background:var(--ink); }
+.pabellon-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px; margin-top:52px; }
+.pabellon-card { background:var(--grey-mid); padding:44px; position:relative; overflow:hidden; transition:background 0.3s; }
+.pabellon-card:hover { background:#1a3050; }
+.pabellon-card::before { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:var(--gold); transform:scaleX(0); transform-origin:left; transition:transform 0.35s ease; }
+.pabellon-card:hover::before { transform:scaleX(1); }
+.pabellon-card-img { width:100%; aspect-ratio:16/9; object-fit:cover; display:block; opacity:0.5; margin-bottom:24px; background:var(--grey); }
+.pabellon-card-title { font-family:'Anton',sans-serif; font-size:22px; text-transform:uppercase; margin-bottom:10px; color:var(--white); }
+.pabellon-card-body { font-size:15px; line-height:1.7; color:rgba(245,240,232,0.62); }
+.afluencia-card { background:var(--grey-mid); padding:44px; border-left:4px solid var(--gold); margin-top:2px; }
+.afluencia-list { list-style:none; margin-top:18px; }
+.afluencia-list li { display:flex; align-items:flex-start; gap:14px; font-size:15px; line-height:1.6; color:rgba(245,240,232,0.72); padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+.afluencia-list li:last-child { border-bottom:none; }
+.afluencia-list li::before { content:''; display:block; width:8px; height:8px; background:var(--gold); border-radius:50%; flex-shrink:0; margin-top:7px; }
+
+.producto-section { background:var(--grey); }
+.producto-layout { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; margin-top:52px; }
+.producto-spec-list { list-style:none; margin-top:28px; }
+.producto-spec-list li { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid rgba(255,255,255,0.07); font-size:15px; }
+.spec-key { font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:12px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); }
+.spec-val { color:var(--gold); font-weight:600; text-align:right; max-width:60%; }
+.producto-img-col { display:flex; flex-direction:column; gap:16px; }
+.producto-img-main { width:100%; aspect-ratio:1; object-fit:cover; display:block; background:var(--grey-mid); opacity:0.6; border:1px solid rgba(255,255,255,0.05); }
+.producto-desc { font-size:16px; line-height:1.8; color:rgba(245,240,232,0.72); }
+.highlight-box { background:rgba(0,85,164,0.15); border:1px solid rgba(0,85,164,0.45); padding:26px; margin-top:28px; }
+.highlight-box p { font-size:15px; line-height:1.7; color:rgba(245,240,232,0.82); }
+
+.patrocinio-section { background:var(--ink); }
+.patrocinio-layout { display:grid; grid-template-columns:3fr 2fr; gap:72px; align-items:start; margin-top:52px; }
+.patrocinio-desc { font-size:16px; line-height:1.8; color:rgba(245,240,232,0.72); margin-bottom:28px; }
+.includes-list { list-style:none; }
+.includes-list li { display:flex; align-items:flex-start; gap:14px; font-size:15px; line-height:1.6; color:rgba(245,240,232,0.72); padding:13px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+.includes-list li:last-child { border-bottom:none; }
+.includes-list li::before { content:''; display:block; width:8px; height:8px; background:var(--gold); border-radius:50%; flex-shrink:0; margin-top:7px; }
+.patrocinio-side { display:flex; flex-direction:column; gap:18px; }
+.cost-card { background:var(--blue); padding:44px; text-align:center; position:relative; overflow:hidden; }
+.cost-card::before { content:''; position:absolute; inset:4px; border:1px solid rgba(255,255,255,0.12); pointer-events:none; }
+.cost-label { font-family:'Barlow Condensed',sans-serif; font-weight:600; font-size:11px; letter-spacing:0.25em; text-transform:uppercase; color:rgba(255,255,255,0.55); margin-bottom:14px; }
+.cost-price { font-family:'Anton',sans-serif; font-size:52px; color:var(--gold); line-height:1; }
+.cost-iva { font-family:'Barlow Condensed',sans-serif; font-size:14px; color:rgba(255,255,255,0.5); margin-top:6px; letter-spacing:0.1em; }
+.pago-card { background:var(--grey-mid); padding:32px; border-top:3px solid var(--gold); }
+.pago-title { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; }
+.pago-step { display:flex; align-items:center; gap:14px; padding:11px 0; border-bottom:1px solid rgba(255,255,255,0.06); font-size:14px; color:rgba(245,240,232,0.72); }
+.pago-step:last-child { border-bottom:none; }
+.pago-step-num { width:28px; height:28px; background:var(--gold); color:var(--ink); font-family:'Anton',sans-serif; font-size:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.pago-note { font-size:13px; color:var(--text-muted); margin-top:14px; line-height:1.5; }
+.club-bonus { background:rgba(255,215,0,0.08); border:1px solid rgba(255,215,0,0.3); padding:28px; margin-top:28px; }
+.club-bonus-title { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:11px; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); margin-bottom:14px; }
+
+.contact-section { background:var(--grey); text-align:center; padding:140px 60px; position:relative; overflow:hidden; z-index:1; }
+.contact-section::before { content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:700px; height:700px; background:radial-gradient(circle,rgba(0,85,164,0.15) 0%,transparent 70%); pointer-events:none; }
+.contact-inner { position:relative; z-index:1; max-width:680px; margin:0 auto; }
+.contact-title { font-family:'Anton',sans-serif; font-size:clamp(44px,6.5vw,88px); line-height:0.92; text-transform:uppercase; margin-bottom:20px; }
+.contact-sub { font-size:17px; color:rgba(245,240,232,0.58); margin-bottom:48px; line-height:1.75; }
+.contact-ctas { display:flex; justify-content:center; gap:18px; flex-wrap:wrap; }
+
+footer { background:#020c18; padding:36px 60px; border-top:1px solid rgba(255,255,255,0.05); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:18px; z-index:1; position:relative; }
+.footer-brand { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-muted); }
+.footer-brand span { color:var(--gold); }
+.footer-links { display:flex; gap:28px; list-style:none; flex-wrap:wrap; }
+.footer-links a { font-family:'Barlow Condensed',sans-serif; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); text-decoration:none; transition:color 0.2s; }
+.footer-links a:hover { color:var(--gold); }
+
+.reveal { opacity:0; transform:translateY(36px); transition:opacity 0.7s ease,transform 0.7s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-delay-1 { transition-delay:0.1s; }
+.reveal-delay-2 { transition-delay:0.2s; }
+.reveal-delay-3 { transition-delay:0.3s; }
+.reveal-delay-4 { transition-delay:0.45s; }
+
+@media (max-width:1024px) {
+  .hero { grid-template-columns:1fr; min-height:auto; }
+  .hero-right { display:none; }
+  .hero-left { padding:120px 32px 72px; }
+  .club-grid,.producto-layout,.patrocinio-layout,.pabellon-grid { grid-template-columns:1fr; gap:36px; }
+  .stats-band-inner { grid-template-columns:repeat(2,1fr); }
+  nav { padding:14px 20px; }
+  .nav-links { display:none; }
+  .nav-hamburger { display:flex; }
+  .section { padding:80px 20px; }
+  .stats-band { padding:52px 20px; }
+  footer { padding:28px 20px; flex-direction:column; text-align:center; }
+}
+@media (max-width:640px) {
+  .hero-left { padding:100px 16px 60px; }
+  .hero-stats { gap:20px; }
+  .hero-stat-num { font-size:30px; }
+  .cost-price { font-size:38px; }
+  .stats-band-inner { grid-template-columns:1fr; }
+  .stat-block { border-left:2px solid rgba(255,255,255,0.15)!important; padding-left:20px!important; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-balls" id="bgBalls"></div>
+
+<div id="cursor">
+  <svg viewBox="0 0 34 34" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="17" cy="17" r="15" fill="#E8C84A" stroke="#0A0A0A" stroke-width="1.2"/>
+    <path d="M4,10 Q17,4 30,10" fill="none" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M4,24 Q17,30 30,24" fill="none" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M10,4 Q4,17 10,30" fill="none" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M24,4 Q30,17 24,30" fill="none" stroke="#0A0A0A" stroke-width="1.4" stroke-linecap="round"/>
+    <line x1="4" y1="17" x2="30" y2="17" stroke="#0A0A0A" stroke-width="0.8" opacity="0.4"/>
+    <line x1="17" y1="4" x2="17" y2="30" stroke="#0A0A0A" stroke-width="0.8" opacity="0.4"/>
+  </svg>
+</div>
+<div id="cursor-trail"></div>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#club" onclick="closeMobile()">El Club</a>
+  <a href="#pabellon" onclick="closeMobile()">Pabellón</a>
+  <a href="#figura" onclick="closeMobile()">Figura</a>
+  <a href="#patrocinio" onclick="closeMobile()">Patrocinio</a>
+  <a href="#contacto" onclick="closeMobile()" class="mobile-menu-cta">Contactar</a>
+</div>
+
+<nav id="mainNav">
+  <div class="nav-collab">
+    <span class="nav-badge">Merchandream</span>
+    <span class="nav-x">×</span>
+    <span class="nav-badge-blue">BM Villa de Aranda</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#club">El Club</a></li>
+    <li><a href="#pabellon">Pabellón</a></li>
+    <li><a href="#figura">Figura</a></li>
+    <li><a href="#patrocinio">Patrocinio</a></li>
+    <li><a href="#contacto" class="nav-cta">Contactar</a></li>
+  </ul>
+  <button class="nav-hamburger" id="hamburger" onclick="toggleMobile()" aria-label="Menú">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-left">
+    <div class="hero-collab-tag reveal">Merchandream × Balonmano Villa de Aranda</div>
+    <h1 class="hero-title reveal reveal-delay-1">
+      <span class="line-outline">Balonmano</span>
+      <span class="line-gold">Villa de</span>
+      <span class="line-white">Aranda.</span>
+    </h1>
+    <p class="hero-desc reveal reveal-delay-2">Club asentado en la Liga Asobal de Balonmano. Con una masa social de 2.250 abonados y un aforo completo de 2.800 espectadores en el Pabellón Santiago Manguán.</p>
+    <div class="hero-cta-group reveal reveal-delay-3">
+      <a href="#patrocinio" class="pill-cta pill-cta-primary">Ver propuesta de patrocinio <span class="pill-cta-arrow">→</span></a>
+      <a href="#club" class="pill-cta pill-cta-secondary">Conocer el club</a>
+    </div>
+    <div class="hero-stats reveal reveal-delay-4">
+      <div class="hero-stat">
+        <div class="hero-stat-num">2.250</div>
+        <div class="hero-stat-label">Abonados</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">2.800</div>
+        <div class="hero-stat-label">Aforo</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">+50K</div>
+        <div class="hero-stat-label">Habitantes</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">Liga</div>
+        <div class="hero-stat-label">Asobal</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-glow"></div>
+    <div class="hero-ball-wrap">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="ballGrad" cx="38%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#FFEC70"/>
+            <stop offset="55%" stop-color="#FFD700"/>
+            <stop offset="100%" stop-color="#b89a00"/>
+          </radialGradient>
+          <radialGradient id="shine" cx="32%" cy="28%" r="40%">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.45)"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+          </radialGradient>
+        </defs>
+        <circle cx="150" cy="150" r="138" fill="url(#ballGrad)"/>
+        <circle cx="150" cy="150" r="138" fill="url(#shine)"/>
+        <path d="M40,90 Q150,30 260,90" fill="none" stroke="#0055A4" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M40,210 Q150,270 260,210" fill="none" stroke="#0055A4" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M65,35 Q20,150 65,265" fill="none" stroke="#0055A4" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+        <path d="M235,35 Q280,150 235,265" fill="none" stroke="#0055A4" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+        <ellipse cx="150" cy="150" rx="138" ry="50" fill="none" stroke="#0055A4" stroke-width="4" opacity="0.5"/>
+        <ellipse cx="150" cy="150" rx="50" ry="138" fill="none" stroke="#0055A4" stroke-width="4" opacity="0.5"/>
+        <circle cx="150" cy="150" r="138" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="3"/>
+      </svg>
+    </div>
+    <div class="hero-right-label">Pabellón Santiago Manguán · Aranda de Duero</div>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">Balonmano Villa de Aranda <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Liga Asobal <span class="marquee-dot"></span></span>
+    <span class="marquee-item">2.250 Abonados <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Aforo 2.800 Localidades <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Ribera del Duero <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Patrocinio Exclusivo <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Figura 1,80 m Tamaño Real <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Merchandream <span class="marquee-dot"></span></span>
+    <span class="marquee-item">+15.700 Seguidores en RRSS <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Balonmano Villa de Aranda <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Liga Asobal <span class="marquee-dot"></span></span>
+    <span class="marquee-item">2.250 Abonados <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Aforo 2.800 Localidades <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Ribera del Duero <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Patrocinio Exclusivo <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Figura 1,80 m Tamaño Real <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Merchandream <span class="marquee-dot"></span></span>
+    <span class="marquee-item">+15.700 Seguidores en RRSS <span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<div class="stats-band">
+  <div class="stats-band-inner">
+    <div class="stat-block reveal">
+      <span class="stat-num">2.250</span>
+      <span class="stat-label">Masa Social</span>
+    </div>
+    <div class="stat-block reveal reveal-delay-1">
+      <span class="stat-num">2.800</span>
+      <span class="stat-label">Espectadores / Partido</span>
+    </div>
+    <div class="stat-block reveal reveal-delay-2">
+      <span class="stat-num">+50K</span>
+      <span class="stat-label">Habitantes Comarca</span>
+    </div>
+    <div class="stat-block reveal reveal-delay-3">
+      <span class="stat-num">+15K</span>
+      <span class="stat-label">Seguidores RRSS</span>
+    </div>
+  </div>
+</div>
+
+<section class="section club-section" id="club">
+  <div class="section-inner">
+    <div class="section-tag reveal">El Club</div>
+    <h2 class="section-title reveal reveal-delay-1"><span class="accent-gold">Balonmano</span><br>Villa de Aranda</h2>
+    <div class="club-grid">
+      <div>
+        <p class="reveal" style="font-size:16px;line-height:1.8;color:rgba(245,240,232,0.72);margin-bottom:16px;">Club asentado en la Liga Asobal de Balonmano, con una masa social de 2.250 abonados y una asistencia de 2.800 espectadores sobre un aforo de 2.800 localidades.</p>
+        <p class="reveal reveal-delay-1" style="font-size:16px;line-height:1.8;color:rgba(245,240,232,0.72);margin-bottom:24px;">Con una población en la Comarca de la Ribera del Duero de más de 50.000 habitantes, el club cuenta con una comunidad sólida tanto en el estadio como en redes sociales.</p>
+        <div class="section-tag reveal reveal-delay-2" style="margin-bottom:16px;margin-top:8px;">Seguidores en redes sociales</div>
+        <div class="social-grid reveal reveal-delay-2">
+          <div class="social-card"><div><div class="social-name">X (Twitter)</div></div><div class="social-num">2.300</div></div>
+          <div class="social-card"><div><div class="social-name">YouTube</div></div><div class="social-num">2.500</div></div>
+          <div class="social-card"><div><div class="social-name">Facebook</div></div><div class="social-num">5.400</div></div>
+          <div class="social-card"><div><div class="social-name">Instagram</div></div><div class="social-num">5.500</div></div>
+        </div>
+        <div class="reveal reveal-delay-3" style="margin-top:32px;">
+          <a href="#patrocinio" class="pill-cta pill-cta-primary">Ver propuesta <span class="pill-cta-arrow">→</span></a>
+        </div>
+      </div>
+      <div class="club-img-wrap reveal reveal-delay-2">
+        <img src="./assets/Pabellon.png" alt="Pabellón Santiago Manguán - Balonmano Villa de Aranda">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section pabellon-section" id="pabellon">
+  <div class="section-inner">
+    <div class="section-tag reveal">Las Instalaciones</div>
+    <h2 class="section-title reveal reveal-delay-1">Pabellón<br><span class="accent-gold">Santiago</span><br>Manguán</h2>
+    <div class="pabellon-grid">
+      <div class="pabellon-card reveal">
+        <img class="pabellon-card-img" src="./assets/exterior.png" alt="Pabellón Santiago Manguán exterior">
+        <div class="pabellon-card-title">Polideportivo Multifuncional</div>
+        <p class="pabellon-card-body">Es un polideportivo multifuncional que alberga competiciones deportivas, eventos culturales y actividades comunitarias, destacando principalmente en el ámbito del balonmano y el baloncesto.</p>
+      </div>
+      <div class="pabellon-card reveal reveal-delay-1">
+        <img class="pabellon-card-img" src="./assets/interior.png" alt="Interior del pabellón — 2.800 localidades">
+        <div class="pabellon-card-title">2.800 Localidades<br>Con Asiento</div>
+        <p class="pabellon-card-body">Tiene una capacidad de aforo de 2.800 localidades todas con asiento, garantizando la máxima visibilidad para cualquier patrocinador instalado en el recinto.</p>
+      </div>
+    </div>
+    <div class="afluencia-card reveal" style="margin-top:2px;">
+      <div class="section-tag" style="margin-bottom:8px;">Sobre las Figuras</div>
+      <h3 style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;margin-bottom:4px;">Fabricación <span class="accent-gold">Premium</span></h3>
+      <ul class="afluencia-list">
+        <li>Fabricadas de fibra de vidrio y poliresina y pintadas a mano.</li>
+        <li>Además de la peana del patrocinio, se puede instalar en la base un QR o una placa tipo Paseo de la Fama con los datos de los personajes.</li>
+        <li>Una vez consensuados los personajes, se procede a la obtención de las fotos y demás documentación para su presentación a los posibles patrocinadores.</li>
+        <li>Una vez conseguidos los patrocinadores, se irán instalando las figuras paulatinamente.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section producto-section" id="figura">
+  <div class="section-inner">
+    <div class="section-tag reveal">El Producto</div>
+    <h2 class="section-title reveal reveal-delay-1">Figura<br><span class="accent-gold">Mascota</span><br>Tamaño Real</h2>
+    <div class="producto-layout">
+      <div>
+        <p class="producto-desc reveal">Instalación de una figura a tamaño de 1,80 metros de la mascota del Club en las instalaciones del Pabellón Santiago Manguán.</p>
+        <ul class="producto-spec-list reveal reveal-delay-1">
+          <li><span class="spec-key">Altura</span><span class="spec-val">1,80 metros tamaño real</span></li>
+          <li><span class="spec-key">Material</span><span class="spec-val">Fibra de vidrio y poliresina</span></li>
+          <li><span class="spec-key">Acabado</span><span class="spec-val">Pintada a mano</span></li>
+          <li><span class="spec-key">Ubicación</span><span class="spec-val">Pabellón Santiago Manguán</span></li>
+          <li><span class="spec-key">Peana</span><span class="spec-val">Nombre o logotipo del patrocinador</span></li>
+          <li><span class="spec-key">Extras</span><span class="spec-val">QR o placa tipo Paseo de la Fama</span></li>
+          <li><span class="spec-key">Regalo patrocinador</span><span class="spec-val">100 réplicas de 12 cm</span></li>
+        </ul>
+        <div class="highlight-box reveal reveal-delay-2">
+          <p>Cada muñeco de tamaño real llevará en la base una peana con el nombre o logotipo de la empresa. Además, se regalarán al patrocinador unas 100 unidades de la réplica del muñeco a tamaño de 12 cm.</p>
+        </div>
+      </div>
+      <div class="producto-img-col">
+        <img class="producto-img-main reveal reveal-delay-1" src="./assets/DesignGrande03.png" alt="Figura mascota 1,80 m Balonmano Villa de Aranda">
+        <img class="producto-img-main reveal reveal-delay-2" src="./assets/DesignSmall03.png" alt="Réplica 14 cm mascota — regalo patrocinador">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section patrocinio-section" id="patrocinio">
+  <div class="section-inner">
+    <div class="section-tag reveal">Patrocinio</div>
+    <h2 class="section-title reveal reveal-delay-1">Tu marca<br>en el <span class="accent-gold">corazón</span><br>del balonmano</h2>
+    <div class="patrocinio-layout">
+      <div>
+        <p class="patrocinio-desc reveal">Cada muñeco de tamaño real llevará en la base una peana con el nombre o logotipo de la empresa. Además, se regalarán al patrocinador unas 100 unidades de la réplica del muñeco a tamaño de 12 cm.</p>
+        <div class="reveal reveal-delay-1" style="background:var(--grey-mid);padding:36px;border-left:4px solid var(--blue);margin-top:4px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:var(--blue-light);margin-bottom:18px;">¿Qué incluye el patrocinio?</div>
+          <ul class="includes-list">
+            <li>Figura mascota del club a tamaño real (1,80 metros) instalada en el Pabellón Santiago Manguán.</li>
+            <li>Peana en la base con el nombre o logotipo del patrocinador.</li>
+            <li>Opción de QR o placa tipo Paseo de la Fama en la base.</li>
+            <li>100 unidades de réplica del muñeco a tamaño de 12 cm como regalo.</li>
+            <li>Visibilidad ante 2.800 espectadores por partido en aforo completo.</li>
+            <li>Impacto sobre más de 50.000 habitantes de la Comarca de la Ribera del Duero.</li>
+            <li>Presencia en los canales sociales del club (más de 15.700 seguidores).</li>
+          </ul>
+        </div>
+        <div class="club-bonus reveal reveal-delay-2">
+          <div class="club-bonus-title">Para el Club — Incluido sin coste</div>
+          <ul class="includes-list">
+            <li>Gratis: 100 muñecos réplicas de cada uno de 12 cm de tamaño.</li>
+            <li>Una pantalla LED publicitaria adhesiva para las puertas o cualquier otro tipo similar.</li>
+          </ul>
+        </div>
+        <div class="reveal reveal-delay-3" style="margin-top:36px;">
+          <a href="#contacto" class="pill-cta pill-cta-primary">Solicitar información <span class="pill-cta-arrow">→</span></a>
+        </div>
+      </div>
+      <div class="patrocinio-side">
+        <div class="cost-card reveal reveal-delay-1">
+          <div class="cost-label">Precio del Patrocinio</div>
+          <div class="cost-price">8.900€</div>
+          <div class="cost-iva">+ IVA</div>
+        </div>
+        <div class="pago-card reveal reveal-delay-2">
+          <div class="pago-title">Forma de Pago</div>
+          <div class="pago-step"><div class="pago-step-num">1</div><span>50% a la firma</span></div>
+          <div class="pago-step"><div class="pago-step-num">2</div><span>50% al embarque</span></div>
+          <p class="pago-note">Por transferencia bancaria a la cuenta de Merchandream o del Club propiamente.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact-section" id="contacto">
+  <div class="contact-inner">
+    <div class="section-tag reveal" style="justify-content:center;">Contacto</div>
+    <h2 class="contact-title reveal reveal-delay-1">¿Listo para<br><span class="accent-gold">patrocinar</span>?</h2>
+    <p class="contact-sub reveal reveal-delay-2">Únete al Balonmano Villa de Aranda como patrocinador y lleva tu marca al corazón de la Liga Asobal en la Ribera del Duero.</p>
+    <div class="contact-ctas reveal reveal-delay-3">
+      <a target="_blank" href="mailto:direccion.general@merchandream.es" class="pill-cta pill-cta-primary">Contactar ahora <span class="pill-cta-arrow">→</span></a>
+      <a href="#figura" class="pill-cta pill-cta-secondary">Ver la propuesta</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">
+    <span>Merchandream</span> × Balonmano Villa de Aranda<br>
+    <span style="font-weight:400;font-size:11px;color:var(--text-muted);">Pabellón Santiago Manguán · Aranda de Duero · Ribera del Duero</span>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#club">El Club</a></li>
+    <li><a href="#pabellon">Pabellón</a></li>
+    <li><a href="#figura">Figura</a></li>
+    <li><a href="#patrocinio">Patrocinio</a></li>
+    <li><a href="#contacto">Contacto</a></li>
+  </ul>
+</footer>
+
+<script>
+var cursor = document.getElementById('cursor');
+var trail = document.getElementById('cursor-trail');
+var mouseX=0,mouseY=0,trailX=0,trailY=0,rotation=0,lastX=0,lastY=0;
+
+document.addEventListener('mousemove',function(e){
+  mouseX=e.clientX; mouseY=e.clientY;
+  var dx=mouseX-lastX, dy=mouseY-lastY;
+  rotation+=Math.sqrt(dx*dx+dy*dy)*0.7;
+  lastX=mouseX; lastY=mouseY;
+  cursor.style.left=mouseX+'px';
+  cursor.style.top=mouseY+'px';
+  cursor.querySelector('svg').style.transform='rotate('+rotation+'deg)';
+});
+(function tick(){
+  trailX+=(mouseX-trailX)*0.1;
+  trailY+=(mouseY-trailY)*0.1;
+  trail.style.left=trailX+'px';
+  trail.style.top=trailY+'px';
+  requestAnimationFrame(tick);
+})();
+document.querySelectorAll('a,button').forEach(function(el){
+  el.addEventListener('mouseenter',function(){ cursor.classList.add('hovering'); });
+  el.addEventListener('mouseleave',function(){ cursor.classList.remove('hovering'); });
+});
+
+(function(){
+  var container=document.getElementById('bgBalls');
+  var sizes=[60,90,120,80,50,100,70,110,55,85];
+  var colors=['rgba(0,85,164,0.12)','rgba(255,215,0,0.07)','rgba(0,85,164,0.08)'];
+  sizes.forEach(function(size,i){
+    var ball=document.createElement('div');
+    ball.className='bg-ball';
+    ball.style.width=size+'px';
+    ball.style.height=size+'px';
+    ball.style.left=(5+i*10)+'%';
+    ball.style.background=colors[i%colors.length];
+    ball.style.animationDuration=(18+i*4)+'s';
+    ball.style.animationDelay=-(i*3)+'s';
+    container.appendChild(ball);
+  });
+})();
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){ obs.observe(el); });
+
+window.addEventListener('load',function(){
+  document.querySelectorAll('.hero .reveal').forEach(function(el,i){
+    setTimeout(function(){ el.classList.add('visible'); },150+i*160);
+  });
+});
+
+var mobileOpen=false;
+function toggleMobile(){
+  mobileOpen=!mobileOpen;
+  document.getElementById('mobileMenu').classList.toggle('open',mobileOpen);
+  document.getElementById('hamburger').classList.toggle('open',mobileOpen);
+  document.body.style.overflow=mobileOpen?'hidden':'';
+}
+function closeMobile(){
+  mobileOpen=false;
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+var navEl=document.getElementById('mainNav');
+window.addEventListener('scroll',function(){
+  if(window.scrollY>60){
+    navEl.style.background='rgba(4,17,31,0.97)';
+    navEl.style.backdropFilter='blur(14px)';
+  } else {
+    navEl.style.background='';
+    navEl.style.backdropFilter='';
+  }
+});
+</script>
+</body>
+</html>
